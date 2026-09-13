@@ -1,15 +1,18 @@
 from github import Github, Auth 
-from config import settings
+from app.config import get_settings
+from typing import Iterator
 
-settings = settings.get_settings()
 
-def get_github_client() -> Github:
-    token = settings.github_token
+
+def get_github_client() -> Iterator[Github]:
+    token = get_settings().github_token
+
     if not token:
-        raise ValueError("GitHub token is not set in the environment variables.")
-    auth = Auth.Token(token)
+        raise ValueError("GitHub token is not set in the environment variables")
 
-    gh = Github(auth=auth, base_url=settings.github_url)
+    auth = Auth.Token(token=token)
 
-    return gh
+    return Github(
+        auth=auth
+    )
 
